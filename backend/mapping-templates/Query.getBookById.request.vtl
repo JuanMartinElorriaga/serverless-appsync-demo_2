@@ -1,0 +1,9 @@
+## basado en el template ejemplo de dynamodb
+## $ctx es una helper function. Permite pasar solo el nombre de la variable, sin formato
+{
+    "version" : "2017-02-28",
+    "operation" : "GetItem",
+    "key" : {
+        "bookId" : $util.dynamodb.toDynamoDBJson($ctx.args.bookId),
+    }
+}

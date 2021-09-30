@@ -1,0 +1,43 @@
+service: serverless-appsync-backend
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-2
+
+plugins:
+  - serverless-appsync-plugin
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    ${file(resources.yml)}
+
+custom:
+  appSync:
+    name:  youtube_appsync_API
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    schema: schema.graphql
+    userPoolConfig:
+      awsRegion: us-east-2
+      defaultAction: ALLOW
+      userPoolId: !Ref cognitoUserPool
+    mappingTemplatesLocation: mapping-templates
+    mappingTemplates:
+      - type: Query
+        field: getBookById
+        dataSource: booksTable
+      - type: Mutation
+        field: createBook
+        dataSource: booksTable
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: booksTable
+        config:
+          tableName: !Ref booksTable
+
+
